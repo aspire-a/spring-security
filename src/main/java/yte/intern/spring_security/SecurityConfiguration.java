@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,37 +18,47 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
+//    @Autowired
+//    public SecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+//        UserDetails user = User.builder()
+//                .username("user")
+//                .password("123")
+//                .authorities("ROLE_USER").build();
+//
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password("123")
+//                .authorities("ROLE_ADMIN", "ROLE_USER").build();
+//
+//
+//        authenticationManagerBuilder
+//                .inMemoryAuthentication()
+//                .withUser(user)
+//                .withUser(admin)
+//                .passwordEncoder(NoOpPasswordEncoder.getInstance());
+//    }
+//
+//
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.authorizeRequests(authorize -> authorize
+//                .requestMatchers(antMatcher("/user")).hasAnyRole("USER", "ADMIN")
+//                .requestMatchers(antMatcher("/admin")).hasRole("ADMIN")
+//                .anyRequest().authenticated()
+//        ).formLogin(withDefaults());
+//
+//        return http.build();
+//    }
+///////////////////////////////////////////////////////////////Artık spring yerine user ı biz yönetiyoruz serviceden
+
     @Autowired
-    public SecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        UserDetails user = User.builder()
-                .username("user")
-                .password("123")
-                .authorities("ROLE_USER").build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password("123")
-                .authorities("ROLE_ADMIN", "ROLE_USER").build();
-
-
-        authenticationManagerBuilder
-                .inMemoryAuthentication()
-                .withUser(user)
-                .withUser(admin)
+    public SecurityConfiguration(AuthenticationManagerBuilder authManagerBuilder,
+                                 CustomUserDetailService customerUserDetailService) throws Exception {
+        authManagerBuilder
+                .userDetailsService(customerUserDetailService)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
-    }
-
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(authorize -> authorize
-                .requestMatchers(antMatcher("/user")).hasAnyRole("USER", "ADMIN")
-                .requestMatchers(antMatcher("/admin")).hasRole("ADMIN")
-                .anyRequest().authenticated()
-        ).formLogin(withDefaults());
-
-        return http.build();
     }
 }

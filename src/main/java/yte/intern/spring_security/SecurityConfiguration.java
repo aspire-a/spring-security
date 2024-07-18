@@ -52,7 +52,7 @@ public class SecurityConfiguration {
 //
 //        return http.build();
 //    }
-///////////////////////////////////////////////////////////////Artık spring yerine user ı biz yönetiyoruz serviceden
+////////////////////////////////////////////////////////////////Artık spring yerine user ı biz yönetiyoruz serviceden
 
     @Autowired
     public SecurityConfiguration(AuthenticationManagerBuilder authManagerBuilder,
